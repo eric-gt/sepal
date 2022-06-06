@@ -6,6 +6,86 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum TemperaturePreference {
+  Celsius
+  Farenheit
+  Kelvin
+}
+
+model User {
+  id                    String                @id @default(cuid())
+  email                 String
+  displayName           String
+  createdAt             DateTime              @default(now())
+  temperaturePreference TemperaturePreference
+  spaces                Space[]
+  friends               User[]                @relation("friends")
+  friendsRelation       User[]                @relation("friends")
+  Plant                 Plant[]
+}
+
+model Space {
+  id     String  @id @default(cuid())
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+}
+
+model Room {
+  id     Int     @id @default(autoincrement())
+  plants Plant[]
+}
+
+model InstructionList {
+  id                        String                  @id @default(cuid())
+  water                     WateringInstructions    @relation(fields: [wateringInstructionsId], references: [id])
+  soil                      SoilInstructions        @relation(fields: [soilInstructionsId], references: [id])
+  environment               EnvironmentInstructions @relation(fields: [environmentInstructionsId], references: [id])
+  light                     String
+  humidity                  String
+  temperature               Float
+  plant                     Plant[]
+  wateringInstructionsId    String
+  soilInstructionsId        String
+  environmentInstructionsId String
+}
+
+model SoilInstructions {
+  id              String            @id @default(cuid())
+  type            String
+  InstructionList InstructionList[]
+}
+
+model EnvironmentInstructions {
+  id              String            @id @default(cuid())
+  humidity        String
+  temperature     Float
+  light           String
+  InstructionList InstructionList[]
+}
+
+model WateringInstructions {
+  id              String            @id @default(cuid())
+  amount          String
+  interval        Int
+  intervalType    String
+  InstructionList InstructionList[]
+}
+
+model Plant {
+  id                Int             @id @default(autoincrement())
+  createdAt         DateTime        @default(now())
+  createdBy         User            @relation(fields: [userId], references: [id])
+  scientificName    String
+  nickname          String
+  thumbnail         String
+  room              Room            @relation(fields: [roomId], references: [id])
+  instructions      InstructionList @relation(fields: [instructionListId], references: [id])
+  userId            String
+  roomId            Int
+  instructionListId String
 }
