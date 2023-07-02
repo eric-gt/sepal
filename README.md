@@ -1,2 +1,3 @@
 # sepal
-help your home bloom, together
+
+let your home bloom
