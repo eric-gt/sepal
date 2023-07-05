@@ -1,7 +1,7 @@
-import handler from "@my-sst-app/core/handler";
+import handler from "@sepal/core/handler";
 import * as uuid from "uuid";
 import { Table } from "sst/node/table";
-import dynamoDb from "@my-sst-app/core/dyanmoDb";
+import dynamoDb from "@sepal/core/dyanmoDb";
 
 export const main = handler(async (event) => {
   const data = JSON.parse(event.body);
@@ -10,7 +10,7 @@ export const main = handler(async (event) => {
   const collection = {
     id: uuid.v1(),
     userId,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
     ...data,
   };
 

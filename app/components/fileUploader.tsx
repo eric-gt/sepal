@@ -1,16 +1,23 @@
-import { useRef } from "react";
-export default function FileUploader({onFileSelect}) {
-    const fileInput = useRef(null)
+"use client";
+import { ChangeEvent, ChangeEventHandler, Ref, useRef } from "react";
 
-    const handleInput = (e) => {
-        e.preventDefault();
-        onFileSelect(e.target.files[0])
+type FileSelectHandler = {
+  onFileSelect: (file: File) => void;
+};
+export default function FileUploader({ onFileSelect }: FileSelectHandler) {
+  const fileInput: Ref<HTMLInputElement> = useRef<HTMLInputElement>(null);
+  const handleFileUpload: ChangeEventHandler<HTMLInputElement> = async (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target?.files) {
+      const file = e.target.files[0];
+      await onFileSelect(file);
     }
-
-    return(
-        <div className="file-uploader">
-            <input type="file" onChange={handleInput} />
-            <button onClick={e => fileInput.current && fileInput.current.click()} />
-        </div>
-    )
+  };
+  return (
+    <div className="file-uploader">
+      <input type="file" onChange={handleFileUpload} />
+      <button onClick={(e) => fileInput.current && fileInput.current.click()} />
+    </div>
+  );
 }

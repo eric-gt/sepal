@@ -1,12 +1,11 @@
-import handler from "../../../core/src/handler";
+import handler from "@sepal/core/handler";
 import { Table } from "sst/node/table";
 import { DynamoDB } from "aws-sdk";
-import dyanmoDb from "../../../core/src/dyanmoDb";
+import dyanmoDb from "@sepal/core/dyanmoDb";
 
 export const main = handler(async (event) => {
   const data = JSON.parse(event.body);
-  const userId =
-    event.requestContext.authorizer.iam.cognitioIdentity.identityId;
+  const userId = event.requestContext.authorizer.iam.cognitoIdentity.identityId;
   const params: DynamoDB.UpdateItemInput = {
     TableName: Table.Collections.tableName,
     Key: {
@@ -16,7 +15,7 @@ export const main = handler(async (event) => {
     UpdateExpression:
       "SET updatedAt=:updatedAt, attachment=:attachment, rooms=:rooms",
     ExpressionAttributeValues: {
-      ":updatedAt": { N: Date.now().toString() } ?? null,
+      ":updatedAt": { N: Date.now().toString() },
       ":rooms": data.rooms ?? null,
       ":attachment": data.attachment ?? null,
     },

@@ -1,17 +1,19 @@
 import handler from "@sepal/core/handler";
-import { Table } from "sst/node/table";
 import { DynamoDB } from "aws-sdk";
+import { Table } from "sst/node/table";
 import dyanmoDb from "@sepal/core/dyanmoDb";
 
 export const main = handler(async (event) => {
   const userId = event.requestContext.authorizer.iam.cognitoIdentity.identityId;
-  const params: DynamoDB.QueryInput = {
+
+  const params: DynamoDB.DeleteItemInput = {
     TableName: Table.Collections.tableName,
-    KeyConditionExpression: "userId = :userId",
-    ExpressionAttributeValues: {
-      ":userId": userId,
+    Key: {
+      userId,
+      id: { S: "sharedCollections" },
     },
   };
-  const data = await dyanmoDb.query(params);
-  return data;
+
+  await dyanmoDb.delete(params);
+  return { status: true };
 });

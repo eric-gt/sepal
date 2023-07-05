@@ -14,7 +14,7 @@ export function AuthStack({ stack, app }: StackContext) {
   auth.attachPermissionsForAuthUsers(stack, [
     api,
     new iam.PolicyStatement({
-      actions: ["S3:*"],
+      actions: ["s3:*"],
       effect: iam.Effect.ALLOW,
       resources: [
         bucket.bucketArn + "/private/${cognito-identity.amazonaws.com:sub}/*",

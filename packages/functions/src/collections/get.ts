@@ -1,12 +1,11 @@
+import handler from "@sepal/core/handler";
 import { DynamoDB } from "aws-sdk";
-import handler from "../../../core/src/handler";
 import { Table } from "sst/node/table";
-import dyanmoDb from "../../../core/src/dyanmoDb";
+import dyanmoDb from "@sepal/core/dyanmoDb";
 
 export const main = handler(async (event) => {
   const data = JSON.parse(event.body);
-  const userId =
-    event.requestContext.authorizer.iam.cognitioIdentity.identityId;
+  const userId = event.requestContext.authorizer.iam.cognitoIdentity.identityId;
   const params: DynamoDB.GetItemInput = {
     TableName: Table.Collections.tableName,
     Key: {
